@@ -1,0 +1,213 @@
+PROJECT INFO:
+    name: Bookshelf API
+    fungsi: user dapat mengelola list buku
+                - mendapat daftar buku
+                - mengubah data buku
+                - menghapus list buku
+                - melihat detail Buku
+    date: 2023-09-30
+    expired: 2023-10-17
+
+
+kriteria aplikasi 
+
+kriteria 1{
+    mengunakan port : 9000
+}
+
+kriteria 2{
+    aplikasi dijalankan mengunakan perintah "npm run start"
+}
+
+kriteria 3{
+    API dapan menyimpan buku melalui route:
+        - method: POST
+        - URL: /books
+        - body request:
+            {
+                "name": string,
+                "year": number,
+                "author": string,
+                "summary": string,
+                "publisher": string,
+                "pageCount": number,
+                "readPage": number,
+                "reading": boolean,
+            }
+    full objek buku in server:
+        {
+            "id": "kugaufguiweg",
+                "name": "Buku A",
+                "year": 2010,
+                "author": "Eko Ramadani",
+                "summary": "lorem impus nom summary",
+                "publisher": "situs project",
+                "pageCount": 100,
+                "readPage": 25,
+            "finished": false,
+                "reading": false,
+            "inserteAt": "2021-03-04T09:11:44.598Z"
+            "updateAt": "2021-03-04T09:11:44.598Z"
+        }
+    'id' harus unik bisa memanfaatkan nanoid(npm install nanoid@3)
+    'finised' boolean hasildari command:
+        {(pageCount === readPage)?true:false}
+    'inserteAt' bisa dari {newDate().toISOString()}
+    'updateAt'== inserteAt
+
+    AND///
+
+    server harus merspon gagal jika
+        - client tidak melampirkan name pada request body
+          response: - status code : 400
+                    - response body : {
+                        "status": "fail",
+                        "message": "Gagal menambahkan buku. Mohon isi nama buku",
+                    }
+        - client melampirkan nilai properti 'readPage' lebih besar dari "pageCount'
+          response: - status code: 400,
+                    - response body:{
+                        "status": "fail",
+                        "message": "Gagal menambahkan buku. readPage tidak boleh lebih besar dari pageCount",
+                    }
+    bila buku berhasil dimasukan
+    response: - status code: 201
+              - response body: {
+                    "status": "success",
+                    "message": "Buku berhasil ditambahkan",
+                    "data": {
+                        "bookId": "uykdfauyd",
+                    }
+              }
+}
+
+kriteria 4{
+    API dapat menampilkan seluruh buku melaui route:
+        - method: GET
+        - URL: /books
+
+    server harus mengemlikan response:
+        - status code: 200
+        - response body:{
+            "status": "success",
+            "data": {
+                "book": [
+                    {
+                        "id": "liaugwdug",
+                        "name": "Buku A",
+                        "publisher": "my srory",
+                    },
+                     {
+                        "id": "liaugwdug",
+                        "name": "Buku A",
+                        "publisher": "my srory",
+                    },
+                     {
+                        "id": "liaugwdug",
+                        "name": "Buku A",
+                        "publisher": "my srory",
+                    },
+                ]
+            }
+        }
+    
+    jika belum ada buku response:
+    {
+         "status": "success",
+            "data": {
+                "book": []
+            }
+    }
+}
+
+kriteria 5{
+    API dapat menampilkan detail buku melalui route:
+        - method: GET
+        - URL: /books/{book id}
+    
+    jika buku tidak ditemukan
+    response:
+        - status code: 404
+        - response body: {
+            "status": "fail",
+                "message": "Buku tidak ditemukan",
+            }
+    
+    bila id yang dilampirkan ditemukan
+    response:
+        - status code: 200
+        - response body: {
+             "id": "kugaufguiweg",
+                "name": "Buku A",
+                "year": 2010,
+                "author": "Eko Ramadani",
+                "summary": "lorem impus nom summary",
+                "publisher": "situs project",
+                "pageCount": 100,
+                "readPage": 25,
+            "finished": false,
+                "reading": false,
+            "inserteAt": "2021-03-04T09:11:44.598Z"
+            "updateAt": "2021-03-04T09:11:44.598Z"
+        }
+}
+
+kriteria 6{
+    API dapat mengubah data buku melaui route:
+        - method: PUT
+        - URL: /bokks/{book id}
+        - body request: {
+            "name": string,
+            "year": number,
+            "author": string,
+            "summary": string,
+            "publisher": string,
+            "pageCount": number,
+            "readPage": number,
+            "reading": boolean,
+        }
+    
+    server harus merspon gagal bila:
+     - client tidak melampirkan properti nama
+       RESPONSE: - status code: 400
+                 - response body: {
+                    "status": "fail",
+                    "message": "Gagal memperbarui buku. Mohon isi nama buku",
+                 }
+     - nilai readPage lebih besar dri pageCount:
+       response: - status code: 400
+                 - response body: {
+                    "status": "fail",
+                    "message": "Gagal memperbarui buku. readPage tidak boleh lebih besar dari pageCount",
+                 }
+     - id tidak ditemukan
+       response: - status code: 400
+                 - response body: {
+                    "status": "fail",
+                    "message": "Gagal memperbarui buku. id tidak ditemukan",
+                 }
+    jika berhasil
+    response: - status code: 400
+              - response body: {
+                    "status": "success",
+                    "message": "Buku berhasil diperbarui",
+                 }
+}
+
+kriteria 7{
+    API dapat menghapus buku berdasar id route:
+        - method: DELETE
+        - URL: /book/{book id}
+    bila buku tidak ditemukan
+    response: - status code: 400
+              - response body: {
+                    "status": "fail",
+                    "message": "Buku gagal dihapus. id tidak ditemukan",
+                 }
+    bila berhasil
+    response: - status code: 200
+              - response body: {
+                    "status": "success",
+                    "message": "Buku berhasil dihapus",
+                 }
+}
