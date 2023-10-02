@@ -1,64 +1,43 @@
-const {books} = require('./books.js')
-
-const addBookHandler = (request, h)=>{
-    const {
-        name,
-        year,
-        author,
-        summary,
-        publisher,
-        pageCount,
-        readPage,
-        reading
-    } = request.payload
+const books = require('./books.js')
+const ids = Math.random()
+const addNoteHandler = (request, h)=>{
+    const {name,author} = request.payload
     const createdAt = new Date().toISOString()
     const updateAt = createdAt
-    const id = "iugiugyy"
-
-    const newBook = {
-        name,
-        year,
-        author,
-        summary,
-        publisher,
-        pageCount,
-        readPage,
-        reading,
-        id,
-        createdAt,
-        updateAt
+    // const id = nanoid(16)
+    const id = ids
+    const newNote = {
+        name,author,id,createdAt,updateAt
     }
-    books.push(newBook)
 
-    const isSuccess = books.filter((book)=> book.id === id).length > 0
+    books.push(newNote)
+
+    const isSuccess = books.filter((note) => note.id === id).length > 0
 
     if(isSuccess){
-        if(name === '' || name === undefined ){
-            const response = h.response({
-                status: 'fail',
-                message: 'Gagal menambah buku, mohon isi nama buku',
-            })
-            response.code(400)
-            return response
-        }else if(readPage > pageCount){
-            const response = h.response({
-                status: 'fail',
-                message: 'Gagal menambah buku, readPage tidak boleh lebih besar dari pageCount',
-            })
-            response.code(400)
-            return response
-        }else{
-            const response = h.response({
-                status: 'success',
-                message: 'Buku berhasil ditambahkan',
-                data: {
-                    bookId: id,
-                }
-            })
-            response.code(201)
-            return response
-        }
+        const response = h.response({
+            status: 'success',
+            message: 'Catatan berhasil ditambahkan',
+            data: {
+                bookId: id,
+            }
+        })
+        response.code(201)
+        return response
     }
+    const response = h.response({
+        status: 'fail',
+        message: 'catatan gagal ditambahkan',
+    })
+    response.code(500)
+    return response
 }
 
-module.exports = {addBookHandler}
+const getAllNotesHandler = () => ({
+    status: 'success',
+    data: {
+      books,
+    },
+  });
+
+module.exports = {addNoteHandler,getAllNotesHandler}
